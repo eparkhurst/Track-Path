@@ -30,38 +30,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LatLng DEFAULT_LAT_LNG;
     private static final String TAG = "MapsActivity";
     public Timer mTimer;
+    public List<LatLng> locationArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Intent intent = getIntent();
-        double Default_Lat = 0;
-        double Default_Lng = 0;
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-//        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//        List<String> providers = lm.getProviders(true);
-//        Location l;
-//        for (int i = 0; i < providers.size(); i++) {
-//            Log.i(TAG, providers.get(i));
-//            try {
-//                l = lm.getLastKnownLocation(providers.get(i));
-//                if (l != null) {
-//                    Default_Lat = l.getLatitude();
-//                    Default_Lng = l.getLongitude();
-//                    break;
-//                }
-//            } catch (SecurityException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        DEFAULT_LAT_LNG = new LatLng( Default_Lat, Default_Lng);
+        Log.i(TAG, "can You see me");
 
     }
 
@@ -138,7 +117,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 }
                 DEFAULT_LAT_LNG = new LatLng(Default_Lat, Default_Lng);
-                mMap.addCircle(new CircleOptions().center(DEFAULT_LAT_LNG).radius(12).fillColor(0xff0000ff));
+                locationArray.add(DEFAULT_LAT_LNG);
             }
         };
         mTimer.scheduleAtFixedRate(task, 500, 10000);
@@ -147,6 +126,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void stopLogging(View view){
         mTimer.cancel();
+       // Log.i(TAG, )
     }
 
     @Override
@@ -163,4 +143,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
+//    mMap.addCircle(new CircleOptions().center(DEFAULT_LAT_LNG).radius(12).fillColor(0xff0000ff));
 }
