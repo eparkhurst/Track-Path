@@ -20,6 +20,8 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -30,7 +32,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LatLng DEFAULT_LAT_LNG;
     private static final String TAG = "MapsActivity";
     public Timer mTimer;
-    public List<LatLng> locationArray;
+    public List locationArray = Collections.synchronizedList(new ArrayList());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +128,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void stopLogging(View view){
         mTimer.cancel();
-       // Log.i(TAG, )
+        LatLng[] array = new LatLng[locationArray.size()];
+        locationArray.toArray(array);
+        for (int i=0; i < array.length; i++) {
+            double lat = array[i].latitude;
+            //double lng = array[i].longitude;
+             Log.i(TAG, String.valueOf(lat));
+             mMap.addCircle(new CircleOptions()
+                     .center(array[i])
+                     .radius(12)
+                     .fillColor(0x7f0000ff)
+                     .strokeWidth(0));
+        }
+
     }
 
     @Override
