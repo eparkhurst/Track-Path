@@ -82,12 +82,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        LatLng denver = new LatLng(40, -105);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        //mMap.addCircle(new CircleOptions().center(DEFAULT_LAT_LNG).radius(12).fillColor(16711681));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(denver, 15.0f));
+        getLocation();
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LAT_LNG, 15.0f));
 
         try {
             mMap.setMyLocationEnabled(true);
@@ -100,30 +96,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mTimer = new Timer();
         TimerTask task = new TimerTask() {
             public void run() {
-                double Default_Lat = 0;
-                double Default_Lng = 0;
-                LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                List<String> providers = lm.getProviders(true);
-                Location l;
-                for (int i = 0; i < providers.size(); i++) {
-                    Log.i(TAG, providers.get(i));
-                    try {
-                        l = lm.getLastKnownLocation(providers.get(i));
-                        if (l != null) {
-                            Default_Lat = l.getLatitude();
-                            Default_Lng = l.getLongitude();
-                            break;
-                        }
-                    } catch (SecurityException e) {
-                        e.printStackTrace();
-                    }
-                }
-                DEFAULT_LAT_LNG = new LatLng(Default_Lat, Default_Lng);
+                getLocation();
                 locationArray.add(DEFAULT_LAT_LNG);
             }
         };
         mTimer.scheduleAtFixedRate(task, 500, 10000);
 
+    }
+
+    public void getLocation(){
+        double Default_Lat = 0;
+        double Default_Lng = 0;
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        List<String> providers = lm.getProviders(true);
+        Location l;
+        for (int i = 0; i < providers.size(); i++) {
+            Log.i(TAG, providers.get(i));
+            try {
+                l = lm.getLastKnownLocation(providers.get(i));
+                if (l != null) {
+                    Default_Lat = l.getLatitude();
+                    Default_Lng = l.getLongitude();
+                    break;
+                }
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+        }
+        DEFAULT_LAT_LNG = new LatLng(Default_Lat, Default_Lng);
     }
 
     public void stopLogging(View view){
@@ -132,7 +132,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationArray.toArray(array);
         for (int i=0; i < array.length; i++) {
             double lat = array[i].latitude;
-            //double lng = array[i].longitude;
              Log.i(TAG, String.valueOf(lat));
              mMap.addCircle(new CircleOptions()
                      .center(array[i])
@@ -141,6 +140,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                      .strokeWidth(0));
         }
 
+    }
+    public void submit(View view){
+        Intent intent = new Intent(this, SubmitActivity.class);
+        startActivity(intent);
     }
 
     @Override
