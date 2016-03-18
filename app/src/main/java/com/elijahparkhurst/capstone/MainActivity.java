@@ -7,7 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -16,12 +19,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String MAP_API_URL = "http://thebankjob.herokuapp.com/data";
     private static final String TAG = "MapsActivity";
+    private ArrayList<String> allMaps = new ArrayList<String>();
+    private ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +38,18 @@ public class MainActivity extends AppCompatActivity {
 
         new DownloadTask().execute(MAP_API_URL);
 
+        final ListView myList;
+        myList = (ListView)findViewById(R.id.listView);
+
+
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, allMaps);
+        adapter.clear();
+        adapter.notifyDataSetChanged();
+        myList.setAdapter(adapter);
+
     }
+
+
 
     private class DownloadTask extends AsyncTask<String, Void, String> {
 
@@ -71,10 +88,28 @@ public class MainActivity extends AppCompatActivity {
             int response = conn.getResponseCode();
             Log.i(TAG, "The response is: " + response);
             is = conn.getInputStream();
-            //Log.i(TAG, "input stream:"+is);
             // Convert the InputStream into a string
             String contentAsString = convertStreamToString(is);
-           // JSONObject json = new JSONObject(contentAsString);
+
+            try {
+                // Parse the entire JSON string
+                JSONObject root = new JSONObject(contentAsString);
+                JSONArray posts = root.getJSONArray("posts");
+                //JSONArray tasks = user.getJSONArray("tasks");
+
+                for(int i=0;i<posts.length();i++) {
+                    // parse the JSON object into fields and values
+                    JSONObject jsonPost = posts.getJSONObject(i);
+                    String aPost = jsonPost.getString("post");
+                    allMaps.add(aPost);
+                    Log.i(TAG, aPost);
+                    //int position = allTasks.indexOf(name);
+                    //mapper.put(position, jsonTasks);
+                }
+
+            } catch (Exception e) {
+                Log.d("Mapit","Exception",e);
+            }
 
 
             Log.i(TAG, contentAsString);

@@ -22,12 +22,11 @@
         android:layout_centerHorizontal="true"
         android:onClick="openMap"/>
 
-    <Button
+
+    <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/button2"
-        android:layout_alignParentBottom="true"
+        android:id="@+id/listView"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="53dp"/>
+        android:layout_below="@+id/startMapButton"/>
 </RelativeLayout>
