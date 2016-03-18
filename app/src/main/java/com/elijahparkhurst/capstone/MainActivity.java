@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -20,6 +21,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MapsActivity";
     private ArrayList<String> allMaps = new ArrayList<String>();
     private ArrayAdapter<String> adapter;
+    HashMap<Integer, Object> mapper = new HashMap<Integer, Object>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,28 @@ public class MainActivity extends AppCompatActivity {
         final ListView myList;
         myList = (ListView)findViewById(R.id.listView);
 
+        myList.setClickable(true);
+        myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String obj = mapper.get((position)).toString();
+
+                try {
+                    JSONObject jsonObj = new JSONObject(obj);
+                    Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+//                    intent.putExtra("Reminder_User_Id", User_ID);
+//                    intent.putExtra("Reminder_Task_Id", jsonObj.get("task_id").toString());
+//                    intent.putExtra("Reminder_Name", jsonObj.get("name").toString());
+//                    intent.putExtra("Reminder_Latitude", Double.parseDouble(jsonObj.get("lat").toString()));
+//                    intent.putExtra("Reminder_Longitude", Double.parseDouble(jsonObj.get("long").toString()));
+//                    intent.putExtra("Reminder_Radius", Double.parseDouble(jsonObj.get("radius").toString()));
+                    startActivity(intent);
+
+                } catch (Exception e) {
+                    Log.d("Didgeridoo", "Exception", e);
+                }
+            }
+        });
 
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, allMaps);
         adapter.clear();
@@ -65,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-           // adapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -76,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
         int len = 500;
 
         try {
-            Log.i(TAG, "This is working in the try block:"+myurl);
             URL url = new URL(myurl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(10000 /* milliseconds */);
@@ -103,16 +127,14 @@ public class MainActivity extends AppCompatActivity {
                     String aPost = jsonPost.getString("post");
                     allMaps.add(aPost);
                     Log.i(TAG, aPost);
-                    //int position = allTasks.indexOf(name);
-                    //mapper.put(position, jsonTasks);
+                    int position = allMaps.indexOf(aPost);
+                    mapper.put(position, posts);
                 }
 
             } catch (Exception e) {
                 Log.d("Mapit","Exception",e);
             }
 
-
-            Log.i(TAG, contentAsString);
             return contentAsString;
 
             // Makes sure that the InputStream is closed after the app is
