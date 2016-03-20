@@ -57,26 +57,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * installed Google Play services and returned to the app.
      */
 
-//    public void getLocation(){
-//        double Default_Lat = 0;
-//        double Default_Lng = 0;
-//        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//        List<String> providers = lm.getProviders(true);
-//        Location l;
-//        for (int i = 0; i < providers.size(); i++) {
-//            Log.i(TAG, providers.get(i));
-//            try {
-//                l = lm.getLastKnownLocation(providers.get(i));
-//                if (l != null) {
-//                    Default_Lat = l.getLatitude();
-//                    Default_Lng = l.getLongitude();
-//                    break;
-//                }
-//            } catch (SecurityException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    };
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -143,6 +124,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     public void submit(View view){
         Intent intent = new Intent(this, SubmitActivity.class);
+        //intent.putParcelableArrayListExtra("locationData", locationArray);
         startActivity(intent);
     }
 

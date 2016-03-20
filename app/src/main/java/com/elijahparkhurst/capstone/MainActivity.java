@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,11 +27,12 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String MAP_API_URL = "http://thebankjob.herokuapp.com/data";
+    private static final String MAP_API_URL = "http://trackpath.herokuapp.com/maps/1";
     private static final String TAG = "MapsActivity";
     private ArrayList<String> allMaps = new ArrayList<String>();
     private ArrayAdapter<String> adapter;
     HashMap<Integer, Object> mapper = new HashMap<Integer, Object>();
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +40,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        progressBar = (ProgressBar)findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.INVISIBLE);
 
         new DownloadTask().execute(MAP_API_URL);
 
         final ListView myList;
         myList = (ListView)findViewById(R.id.listView);
+
+        toggleRefresh();
 
         myList.setClickable(true);
         myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -91,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             adapter.notifyDataSetChanged();
+            toggleRefresh();
         }
     }
 
@@ -114,21 +121,22 @@ public class MainActivity extends AppCompatActivity {
             is = conn.getInputStream();
             // Convert the InputStream into a string
             String contentAsString = convertStreamToString(is);
+            Log.i(TAG, contentAsString);
 
             try {
                 // Parse the entire JSON string
-                JSONObject root = new JSONObject(contentAsString);
-                JSONArray posts = root.getJSONArray("posts");
+                JSONArray maps = new JSONArray(contentAsString);
+                //JSONArray maps = root.getJSONArray("title");
                 //JSONArray tasks = user.getJSONArray("tasks");
 
-                for(int i=0;i<posts.length();i++) {
+                for(int i=0;i<maps.length();i++) {
                     // parse the JSON object into fields and values
-                    JSONObject jsonPost = posts.getJSONObject(i);
-                    String aPost = jsonPost.getString("post");
+                    JSONObject jsonPost = maps.getJSONObject(i);
+                    String aPost = jsonPost.getString("title");
                     allMaps.add(aPost);
                     Log.i(TAG, aPost);
                     int position = allMaps.indexOf(aPost);
-                    mapper.put(position, posts);
+                    mapper.put(position, maps);
                 }
 
             } catch (Exception e) {
@@ -166,7 +174,16 @@ public class MainActivity extends AppCompatActivity {
         return sb.toString();
     }
 
-
+    private void toggleRefresh() {
+        if (progressBar.getVisibility() == View.INVISIBLE){
+            progressBar.setVisibility(View.VISIBLE);
+            //mRefreshImageView.setVisibility(View.INVISIBLE);
+        }
+        else{
+            progressBar.setVisibility(View.INVISIBLE);
+           // mRefreshImageView.setVisibility(View.VISIBLE);
+        }
+    }
 
     public void openMap(View view){
         Intent intent = new Intent(this, MapsActivity.class);
