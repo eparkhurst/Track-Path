@@ -32,7 +32,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LatLng DEFAULT_LAT_LNG;
     private static final String TAG = "MapsActivity";
     public Timer mTimer;
-    public List locationArray = Collections.synchronizedList(new ArrayList());
+    public ArrayList locationArray = new ArrayList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +124,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     public void submit(View view){
         Intent intent = new Intent(this, SubmitActivity.class);
-        //intent.putParcelableArrayListExtra("locationData", locationArray);
+        intent.putParcelableArrayListExtra("locationData", locationArray);
         startActivity(intent);
     }
 

@@ -2,6 +2,7 @@ package com.elijahparkhurst.capstone;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,19 +19,17 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class SubmitActivity extends AppCompatActivity {
 
     private final String TAG="MapsActivity";
     public EditText mTitle;
     public EditText mNote;
-
-//    LatLng D1 = new LatLng(12.345, -12.876);
-//    LatLng D2 = new LatLng(80.98, 33.786);
-//    LatLng[] location = {D1,D2};
+    public JSONArray jsonLocationArray = new JSONArray();
 
     public LocationToSend sender = new LocationToSend();
-
+    public ArrayList locationArray = new ArrayList();
 
 
     @Override
@@ -39,7 +38,26 @@ public class SubmitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_submit);
         mTitle = (EditText)findViewById(R.id.editTitle);
         mNote = (EditText)findViewById(R.id.editNote);
+
+        Intent intent = getIntent();
+        locationArray = intent.getParcelableArrayListExtra("locationData");
+        LatLng[] array = new LatLng[locationArray.size()];
+        locationArray.toArray(array);
+        try {
+            for (int i = 0; i < array.length; i++) {
+                double lat = array[i].latitude;
+                double lng = array[i].longitude;
+                JSONObject loc = new JSONObject();
+                loc.put("latitude", lat);
+                loc.put("longitude", lng);
+                jsonLocationArray.put(loc);
+            }
+        }catch (Exception e) {
+        e.printStackTrace();
     }
+
+}
+
 
     public void saveIt(View view){
         Intent intent = new Intent(this, MainActivity.class);
@@ -48,14 +66,16 @@ public class SubmitActivity extends AppCompatActivity {
         Log.i(TAG, title + " : " + note);
 
         try {
-            JSONObject loc = new JSONObject();
-            loc.put("latitude", sender.lat);
-            loc.put("longitude", sender.lng);
+
+
+            JSONObject test = new JSONObject();
+            test.put("array", jsonLocationArray);
+
 
             JSONObject obj = new JSONObject();
             obj.put("title", title);
             obj.put("note", note);
-            obj.put("location", loc);
+            obj.put("location", test);
             obj.put("userId", 1);
 
             String[] Request_Array = {"POST", obj.toString()};
@@ -131,7 +151,26 @@ public class SubmitActivity extends AppCompatActivity {
 
     }
     public class LocationToSend{
-        public String lat = "123";
+
+        private String lat = "123";
         public String lng = "456";
+
+        public String getLat() {
+            return lat;
+        }
+
+        public String getLng() {
+            return lng;
+        }
+
+        public void setLat(String lat) {
+            this.lat = lat;
+        }
+
+        public void setLng(String lng) {
+            this.lng = lng;
+        }
+
+
     }
 }
