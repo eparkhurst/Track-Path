@@ -30,6 +30,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key"/>
+
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
@@ -48,9 +49,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity"/>
         </activity>
-
-        <activity android:name=".SubmitActivity"
-                  android:parentActivityName=".MapsActivity">
+        <activity
+            android:name=".SubmitActivity"
+            android:parentActivityName=".MapsActivity">
+        </activity>
+        <activity
+            android:name=".OldMapsActivity"
+            android:label="@string/title_activity_old_maps">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.elijahparkhurst.capstone.MainActivity"/>
         </activity>
     </application>
 

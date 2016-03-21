@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -55,12 +56,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String obj = mapper.get((position)).toString();
+                Log.i(TAG,"Clicked on an old map");
 
                 try {
                     JSONObject jsonObj = new JSONObject(obj);
-                    Intent intent = new Intent(MainActivity.this, MapsActivity.class);
-//                    intent.putExtra("Reminder_User_Id", User_ID);
-//                    intent.putExtra("Reminder_Task_Id", jsonObj.get("task_id").toString());
+                    Intent intent = new Intent(MainActivity.this, OldMapsActivity.class);
+                    intent.putExtra("Title", jsonObj.get("title").toString());
+
+                    JSONObject jsonArrayObj = jsonObj.getJSONObject("location");
+                    JSONArray jArray = jsonArrayObj.getJSONArray("array");
+                    Log.i(TAG, "Array to convert" + jArray.toString());
+                    intent.putParcelableArrayListExtra("Location", convertJsonArray(jArray));
 //                    intent.putExtra("Reminder_Name", jsonObj.get("name").toString());
 //                    intent.putExtra("Reminder_Latitude", Double.parseDouble(jsonObj.get("lat").toString()));
 //                    intent.putExtra("Reminder_Longitude", Double.parseDouble(jsonObj.get("long").toString()));
@@ -78,6 +84,16 @@ public class MainActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
         myList.setAdapter(adapter);
 
+    }
+
+    public ArrayList convertJsonArray(JSONArray jsonArray) throws JSONException {
+        ArrayList<String> listdata = new ArrayList<String>();
+        if (jsonArray != null) {
+            for (int i=0;i<jsonArray.length();i++){
+                listdata.add(jsonArray.get(i).toString());
+            }
+        }
+        return listdata;
     }
 
 
@@ -126,8 +142,6 @@ public class MainActivity extends AppCompatActivity {
             try {
                 // Parse the entire JSON string
                 JSONArray maps = new JSONArray(contentAsString);
-                //JSONArray maps = root.getJSONArray("title");
-                //JSONArray tasks = user.getJSONArray("tasks");
 
                 for(int i=0;i<maps.length();i++) {
                     // parse the JSON object into fields and values
@@ -136,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                     allMaps.add(aPost);
                     Log.i(TAG, aPost);
                     int position = allMaps.indexOf(aPost);
-                    mapper.put(position, maps);
+                    mapper.put(position, jsonPost);
                 }
 
             } catch (Exception e) {
