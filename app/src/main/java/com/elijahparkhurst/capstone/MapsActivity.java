@@ -37,6 +37,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public Timer mTimer;
     private ArrayList locationArray = new ArrayList();
     public String title = "";
+    private Intent service;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +55,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         intentFilter.addAction(MyIntentService.TRANSACTION_DONE);
         registerReceiver(locationReceiver, intentFilter);
 
+    }
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MyIntentService.TRANSACTION_DONE);
+        registerReceiver(locationReceiver, intentFilter);
     }
 
 
@@ -70,9 +80,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
     public void startLogging(View view){
-        Intent i = new Intent(this, MyIntentService.class);
-        i.putExtra("action", "start");
-        startService(i);
+        service = new Intent(this, MyIntentService.class);
+
+        startService(service);
+     //   service.putExtra("action", "start");
 
     }
 
@@ -99,9 +110,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void stopLogging(View view){
-        Intent i = new Intent(this, MyIntentService.class);
-        i.putExtra("action", "stop");
-        startService(i);
+        //service.putExtra("action", "stop");
+        stopService(service);
     }
 
 

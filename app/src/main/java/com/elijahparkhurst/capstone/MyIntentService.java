@@ -12,6 +12,7 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -77,10 +78,27 @@ public class MyIntentService extends IntentService {
         context.startService(intent);
     }
 
+
+
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId){
+        Log.i(TAG, "starting!!");
+        startLogging();
+     return 0;
+    }
+
+
+
+
+
+
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getStringExtra("action");
+            Log.i(TAG,action);
             if (ACTION_FOO.equals(action)) {
                startLogging();
             } else if (ACTION_BAZ.equals(action)) {
@@ -90,6 +108,7 @@ public class MyIntentService extends IntentService {
     }
 
     public void startLogging(){
+
         Log.i(TAG,"THIS WAS HIT IN THE BACKGROUND SERVICE");
         mTimer = new Timer();
         mTimer.scheduleAtFixedRate(mTask, 500, 10000);
@@ -102,13 +121,22 @@ public class MyIntentService extends IntentService {
             double lat = DEFAULT_LAT_LNG.latitude;
             Log.i(TAG, "timer task latitiude is : "+String.valueOf(lat));
             locationArray.add(DEFAULT_LAT_LNG);
+            int len = locationArray.size();
+            Log.i(TAG, "before it is sent the length is :" + String.valueOf(len));
         }
     };
 
     public void stopLogging(){
         mTask.cancel();
        // mTimer.cancel();
+        int len = locationArray.size();
+        Log.i(TAG, "In STop Logging length is :" + String.valueOf(len));
         notifyFinished();
+    }
+    @Override
+    public void onDestroy(){
+        Log.i(TAG,"Destroyed!!!");
+        stopLogging();
     }
 
     public void getLocation(){
@@ -138,7 +166,7 @@ public class MyIntentService extends IntentService {
 
     private void notifyFinished(){
         int len = locationArray.size();
-        Log.i(TAG, "before it is sent the length is :" +String.valueOf(len));
+        Log.i(TAG, "In notify Finished the length is :" +String.valueOf(len));
         Intent i = new Intent(TRANSACTION_DONE);
         i.putParcelableArrayListExtra("locationData", locationArray);
         MyIntentService.this.sendBroadcast(i);
