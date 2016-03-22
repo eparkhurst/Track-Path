@@ -60,6 +60,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.elijahparkhurst.capstone.MainActivity"/>
         </activity>
+        <service
+            android:name=".BackgroundService"
+            android:exported="false"/>
     </application>
 
 </manifest>

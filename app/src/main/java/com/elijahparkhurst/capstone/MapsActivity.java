@@ -1,5 +1,6 @@
 package com.elijahparkhurst.capstone;
 
+import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -131,5 +132,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
-//    mMap.addCircle(new CircleOptions().center(DEFAULT_LAT_LNG).radius(12).fillColor(0xff0000ff));
+
 }
