@@ -29,7 +29,7 @@ public class SubmitActivity extends AppCompatActivity {
     public JSONArray jsonLocationArray = new JSONArray();
 
     public LocationToSend sender = new LocationToSend();
-    public ArrayList locationArray = new ArrayList();
+    private ArrayList locationArray = new ArrayList();
 
 
     @Override

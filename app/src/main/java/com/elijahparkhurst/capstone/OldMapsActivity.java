@@ -28,6 +28,7 @@ public class OldMapsActivity extends FragmentActivity implements OnMapReadyCallb
     public ArrayList locationArray = new ArrayList();
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

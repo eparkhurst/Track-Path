@@ -60,6 +60,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.elijahparkhurst.capstone.MainActivity"/>
         </activity>
+
+        <service
+            android:name=".MyIntentService"
+            android:exported="false">
+        </service>
     </application>
 
 </manifest>

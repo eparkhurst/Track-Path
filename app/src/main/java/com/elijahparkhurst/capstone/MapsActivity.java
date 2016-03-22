@@ -1,7 +1,10 @@
 package com.elijahparkhurst.capstone;
 
+import android.app.IntentService;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.v4.app.FragmentActivity;
@@ -32,8 +35,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LatLng DEFAULT_LAT_LNG;
     private static final String TAG = "MapsActivity";
     public Timer mTimer;
-    public ArrayList locationArray = new ArrayList();
+    private ArrayList locationArray = new ArrayList();
     public String title = "";
+    private Intent service;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +51,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         Log.i(TAG, "can You see me");
 
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MyIntentService.TRANSACTION_DONE);
+        registerReceiver(locationReceiver, intentFilter);
+
+    }
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MyIntentService.TRANSACTION_DONE);
+        registerReceiver(locationReceiver, intentFilter);
     }
 
 
@@ -63,14 +80,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
     public void startLogging(View view){
-        mTimer = new Timer();
-        TimerTask task = new TimerTask() {
-            public void run() {
-                getLocation();
-                locationArray.add(DEFAULT_LAT_LNG);
-            }
-        };
-        mTimer.scheduleAtFixedRate(task, 500, 10000);
+        service = new Intent(this, MyIntentService.class);
+
+        startService(service);
+     //   service.putExtra("action", "start");
 
     }
 
@@ -97,20 +110,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void stopLogging(View view){
-        mTimer.cancel();
-        LatLng[] array = new LatLng[locationArray.size()];
-        locationArray.toArray(array);
-        for (int i=0; i < array.length; i++) {
-            double lat = array[i].latitude;
-             Log.i(TAG, String.valueOf(lat));
-             mMap.addCircle(new CircleOptions()
-                     .center(array[i])
-                     .radius(12)
-                     .fillColor(0x7f0000ff)
-                     .strokeWidth(0));
-        }
-
+        //service.putExtra("action", "stop");
+        stopService(service);
     }
+
+
+    private BroadcastReceiver locationReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(TAG, "map activity Reciever HIT");
+            ArrayList locationArray = intent.getParcelableArrayListExtra("locationData");
+            LatLng[] array = new LatLng[locationArray.size()];
+            int len = array.length;
+            //Log.i(TAG, "the array lenght is:"+String.valueOf(len));
+            locationArray.toArray(array);
+            for (int i=0; i < array.length; i++) {
+                double lat = array[i].latitude;
+                Log.i(TAG, String.valueOf(lat));
+                mMap.addCircle(new CircleOptions()
+                        .center(array[i])
+                        .radius(12)
+                        .fillColor(0x7f0000ff)
+                        .strokeWidth(0));
+            }
+        }
+    };
+
+    @Override
+    protected void onStop()
+    {
+        unregisterReceiver(locationReceiver);
+        super.onStop();
+    }
+
+
+
+
     public void submit(View view){
         Intent intent = new Intent(this, SubmitActivity.class);
         intent.putParcelableArrayListExtra("locationData", locationArray);
@@ -131,5 +166,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
-//    mMap.addCircle(new CircleOptions().center(DEFAULT_LAT_LNG).radius(12).fillColor(0xff0000ff));
+
 }
