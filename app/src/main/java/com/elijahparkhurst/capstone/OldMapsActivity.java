@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,8 +25,8 @@ public class OldMapsActivity extends FragmentActivity implements OnMapReadyCallb
 
     private GoogleMap mMap;
     private String TAG = "MapsActivity";
-    private String title = "";
     public ArrayList locationArray = new ArrayList();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,13 @@ public class OldMapsActivity extends FragmentActivity implements OnMapReadyCallb
 
         Intent intent = getIntent();
         locationArray = intent.getParcelableArrayListExtra("Location");
+
+        final TextView titleText;
+        final TextView noteText;
+        titleText = (TextView)findViewById(R.id.titleTextView);
+        noteText = (TextView)findViewById(R.id.notesTextView);
+        titleText.setText(intent.getStringExtra("Title"));
+        noteText.setText(intent.getStringExtra("Note"));
     }
 
     public LatLng[] convertLocation(){

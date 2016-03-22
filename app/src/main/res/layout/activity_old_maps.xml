@@ -19,7 +19,7 @@
               xmlns:map="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_height="550dp"
               tools:context="com.elijahparkhurst.capstone.OldMapsActivity"
               tools:layout="@layout/activity_maps"/>
     <TextView

@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject jsonObj = new JSONObject(obj);
                     Intent intent = new Intent(MainActivity.this, OldMapsActivity.class);
                     intent.putExtra("Title", jsonObj.get("title").toString());
+                    intent.putExtra("Note", jsonObj.get("note").toString());
 
                     JSONObject jsonArrayObj = jsonObj.getJSONObject("location");
                     JSONArray jArray = jsonArrayObj.getJSONArray("array");
