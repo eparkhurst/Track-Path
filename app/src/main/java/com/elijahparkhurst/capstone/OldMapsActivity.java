@@ -24,7 +24,7 @@ public class OldMapsActivity extends FragmentActivity implements OnMapReadyCallb
     private GoogleMap mMap;
     private String TAG = "MapsActivity";
     private String title = "";
-    public ArrayList locationArray = new ArrayList();
+    private ArrayList locationArray = new ArrayList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
