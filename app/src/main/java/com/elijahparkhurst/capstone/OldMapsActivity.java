@@ -1,13 +1,17 @@
 package com.elijahparkhurst.capstone;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,6 +35,7 @@ public class OldMapsActivity extends FragmentActivity implements OnMapReadyCallb
 
 
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,12 +48,14 @@ public class OldMapsActivity extends FragmentActivity implements OnMapReadyCallb
         Intent intent = getIntent();
         locationArray = intent.getParcelableArrayListExtra("Location");
 
+        final Toolbar myToolbar = (Toolbar)findViewById(R.id.my_toolbar);
 
         final TextView noteText;
         final RelativeLayout noteArea = (RelativeLayout)findViewById(R.id.noteArea);
         noteArea.setBackgroundColor(Color.parseColor("#fff2cc"));
         noteText = (TextView)findViewById(R.id.notesTextView);
         noteText.setText(intent.getStringExtra("Note"));
+        myToolbar.setTitle(intent.getStringExtra("Title"));
     }
 
     public LatLng[] convertLocation(){
