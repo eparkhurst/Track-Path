@@ -1,10 +1,12 @@
 package com.elijahparkhurst.capstone;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -43,6 +45,8 @@ public class OldMapsActivity extends FragmentActivity implements OnMapReadyCallb
 
 
         final TextView noteText;
+        final RelativeLayout noteArea = (RelativeLayout)findViewById(R.id.noteArea);
+        noteArea.setBackgroundColor(Color.parseColor("#fff2cc"));
         noteText = (TextView)findViewById(R.id.notesTextView);
         noteText.setText(intent.getStringExtra("Note"));
     }
