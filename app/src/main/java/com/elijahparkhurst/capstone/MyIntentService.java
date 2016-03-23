@@ -148,6 +148,9 @@ public class MyIntentService extends IntentService {
         for (int i = 0; i < providers.size(); i++) {
             Log.i(TAG, providers.get(i));
             try {
+                //lm.requestLocationUpdates(providers.get(i),5000,1,this);
+
+
                 l = lm.getLastKnownLocation(providers.get(i));
                 if (l != null) {
                     Default_Lat = l.getLatitude();

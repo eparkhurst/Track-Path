@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
         final ListView myList;
         myList = (ListView)findViewById(R.id.listView);
 
-        toggleRefresh();
 
         myList.setClickable(true);
         myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -103,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
         userId = prefs.getInt("user_id", 1);
         Log.i(TAG, "From on Resume:" + String.valueOf(userId));
         if(userId > 1){
+            allMaps.clear();
+            toggleRefresh();
             new DownloadTask().execute(MAP_API_URL, "GET");
         }else {
             new DownloadTask().execute(MAP_API_URL, "POST");
