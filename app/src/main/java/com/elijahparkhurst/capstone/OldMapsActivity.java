@@ -41,11 +41,9 @@ public class OldMapsActivity extends FragmentActivity implements OnMapReadyCallb
         Intent intent = getIntent();
         locationArray = intent.getParcelableArrayListExtra("Location");
 
-        final TextView titleText;
+
         final TextView noteText;
-        titleText = (TextView)findViewById(R.id.titleTextView);
         noteText = (TextView)findViewById(R.id.notesTextView);
-        titleText.setText(intent.getStringExtra("Title"));
         noteText.setText(intent.getStringExtra("Note"));
     }
 
