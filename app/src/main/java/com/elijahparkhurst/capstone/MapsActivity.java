@@ -5,12 +5,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -34,10 +37,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private LatLng DEFAULT_LAT_LNG;
     private static final String TAG = "MapsActivity";
-    public Timer mTimer;
     private ArrayList locationArray = new ArrayList();
     public String title = "";
     private Intent service;
+    private LinearLayout layout;
+    private Button submitButton;
 
 
     @Override
@@ -50,6 +54,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         Log.i(TAG, "can You see me");
+
+        layout= (LinearLayout)findViewById(R.id.layout);
+        submitButton= (Button) findViewById(R.id.submitButton);
+        submitButton.setEnabled(false);
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(MyIntentService.TRANSACTION_DONE);
@@ -70,7 +78,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         getLocation();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LAT_LNG, 15.0f));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LAT_LNG, 17.0f));
 
         try {
             mMap.setMyLocationEnabled(true);
@@ -80,6 +88,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
     public void startLogging(View view){
+        layout.setBackgroundColor(Color.parseColor("#51b46d"));
         service = new Intent(this, MyIntentService.class);
 
         startService(service);
@@ -110,6 +119,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void stopLogging(View view){
+        layout.setBackgroundColor(Color.parseColor("#39add1"));
+        submitButton.setEnabled(true);
         //service.putExtra("action", "stop");
         stopService(service);
     }
@@ -119,7 +130,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.i(TAG, "map activity Reciever HIT");
-            ArrayList locationArray = intent.getParcelableArrayListExtra("locationData");
+            locationArray = intent.getParcelableArrayListExtra("locationData");
             LatLng[] array = new LatLng[locationArray.size()];
             int len = array.length;
             //Log.i(TAG, "the array lenght is:"+String.valueOf(len));

@@ -85,7 +85,7 @@ public class SubmitActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        finish();
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 

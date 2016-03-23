@@ -14,31 +14,32 @@
               tools:layout="@layout/activity_maps">
     </fragment>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:id="@+id/layout"
                       android:layout_width="match_parent"
                       android:layout_height="match_parent"
                       android:orientation="horizontal">
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="START"
-            android:id="@+id/startButton"
-            android:layout_marginBottom="51dp"
-            android:onClick="startLogging"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="End"
-            android:id="@+id/endButton"
-            android:layout_marginBottom="51dp"
-            android:onClick="stopLogging"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Save"
-            android:id="@+id/submitButton"
-            android:layout_marginBottom="51dp"
-            android:onClick="submit"/>
-    </LinearLayout>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="START"
+                android:id="@+id/startButton"
+                android:layout_marginBottom="51dp"
+                android:onClick="startLogging"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="End"
+                android:id="@+id/endButton"
+                android:layout_marginBottom="51dp"
+                android:onClick="stopLogging"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Save"
+                android:id="@+id/submitButton"
+                android:layout_marginBottom="51dp"
+                android:onClick="submit"/>
+        </LinearLayout>
 </LinearLayout>
 
 
