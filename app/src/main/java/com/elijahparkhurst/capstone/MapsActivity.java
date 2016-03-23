@@ -42,6 +42,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Intent service;
     private LinearLayout layout;
     private Button submitButton;
+    private int userId;
 
 
     @Override
@@ -54,6 +55,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         Log.i(TAG, "can You see me");
+
+        Intent intent = getIntent();
+        userId = intent.getIntExtra("userId",1);
 
         layout= (LinearLayout)findViewById(R.id.layout);
         submitButton= (Button) findViewById(R.id.submitButton);
@@ -159,6 +163,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void submit(View view){
         Intent intent = new Intent(this, SubmitActivity.class);
+        intent.putExtra("userId",userId);
         intent.putParcelableArrayListExtra("locationData", locationArray);
         startActivity(intent);
     }

@@ -30,6 +30,7 @@ public class SubmitActivity extends AppCompatActivity {
 
     public LocationToSend sender = new LocationToSend();
     private ArrayList locationArray = new ArrayList();
+    private int userId;
 
 
     @Override
@@ -40,6 +41,7 @@ public class SubmitActivity extends AppCompatActivity {
         mNote = (EditText)findViewById(R.id.editNote);
 
         Intent intent = getIntent();
+        userId = intent.getIntExtra("userId",1);
         locationArray = intent.getParcelableArrayListExtra("locationData");
         LatLng[] array = new LatLng[locationArray.size()];
         locationArray.toArray(array);
@@ -76,7 +78,7 @@ public class SubmitActivity extends AppCompatActivity {
             obj.put("title", title);
             obj.put("note", note);
             obj.put("location", test);
-            obj.put("userId", 1);
+            obj.put("userId", userId);
 
             String[] Request_Array = {"POST", obj.toString()};
             new Hit_API().execute(Request_Array);

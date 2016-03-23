@@ -1,6 +1,7 @@
 package com.elijahparkhurst.capstone;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -29,12 +30,14 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String MAP_API_URL = "http://trackpath.herokuapp.com/maps/1";
+    private static final String MAP_API_URL = "http://trackpath.herokuapp.com";
     private static final String TAG = "MapsActivity";
     private ArrayList<String> allMaps = new ArrayList<String>();
     private ArrayAdapter<String> adapter;
     HashMap<Integer, Object> mapper = new HashMap<Integer, Object>();
     ProgressBar progressBar;
+    SharedPreferences prefs = null;
+    private int userId;
 
 //    Intent i = new Intent(this, BackgroundService.class);
 //    i.putExtra("url", getIntent().getExtras().getString("url"));
@@ -49,7 +52,9 @@ public class MainActivity extends AppCompatActivity {
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
 
-        new DownloadTask().execute(MAP_API_URL);
+        prefs = getSharedPreferences("com.elijahparkhurst.capstone", MODE_PRIVATE);
+
+
 
         final ListView myList;
         myList = (ListView)findViewById(R.id.listView);
@@ -92,6 +97,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        userId = prefs.getInt("user_id", 1);
+        Log.i(TAG, "From on Resume:" + String.valueOf(userId));
+        if(userId > 1){
+            new DownloadTask().execute(MAP_API_URL, "GET");
+        }else {
+            new DownloadTask().execute(MAP_API_URL, "POST");
+        }
+    }
+
     public ArrayList convertJsonArray(JSONArray jsonArray) throws JSONException {
         ArrayList<String> listdata = new ArrayList<String>();
         if (jsonArray != null) {
@@ -105,12 +122,21 @@ public class MainActivity extends AppCompatActivity {
 
 
     private class DownloadTask extends AsyncTask<String, Void, String> {
+        String verb ="";
 
         @Override
         protected String doInBackground(String... params) {
+            String url = params[0].toString();
+            verb = params[1];
+            if(verb.equals("POST")){
+                url = url +"/newuser";
+            }else if(verb.equals("GET")){
+                url = url +"/maps/"+String.valueOf(userId);
+                Log.i(TAG, url);
+            }
 
             try {
-                return downloadContent(params[0]);
+                return downloadContent(url, verb);
             } catch (IOException e) {
                 return "Unable to retrieve data. URL may be invalid.";
             }
@@ -118,12 +144,24 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            adapter.notifyDataSetChanged();
-            toggleRefresh();
+            if(verb.equals("GET")) {
+                adapter.notifyDataSetChanged();
+                toggleRefresh();
+            }else if(verb.equals("POST")){
+                String num = result.substring(1,result.length()-2);
+                Log.i(TAG,"From Post Execute:"+num);
+                newUser(Integer.parseInt(num));
+            }
         }
     }
 
-    private String downloadContent(String myurl) throws IOException {
+    public void newUser(int newId){
+        prefs.edit().putInt("user_id", newId).commit();
+        userId = newId;
+        new DownloadTask().execute(MAP_API_URL, "GET");
+    }
+
+    private String downloadContent(String myurl, String verb) throws IOException {
         InputStream is = null;
         // Only display the first 500 characters of the retrieved
         // web page content.
@@ -134,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(10000 /* milliseconds */);
             conn.setConnectTimeout(15000 /* milliseconds */);
-            conn.setRequestMethod("GET");
+            conn.setRequestMethod(verb);
             conn.setDoInput(true);
             // Starts the query
             conn.connect();
@@ -207,6 +245,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void openMap(View view){
         Intent intent = new Intent(this, MapsActivity.class);
+        intent.putExtra("userId",userId);
         startActivity(intent);
     }
 }
