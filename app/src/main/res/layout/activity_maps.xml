@@ -3,41 +3,41 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <fragment android:id="@+id/map"
-              android:name="com.google.android.gms.maps.SupportMapFragment"
-              xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:map="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="500dp"
-              tools:context="com.elijahparkhurst.capstone.MapsActivity"
-              tools:layout="@layout/activity_maps">
-    </fragment>
+        <fragment android:id="@+id/map"
+                  android:name="com.google.android.gms.maps.SupportMapFragment"
+                  xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="0dp"
+                  android:layout_weight="9">
+        </fragment>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                       android:id="@+id/layout"
+                      android:layout_alignParentBottom="true"
                       android:layout_width="match_parent"
-                      android:layout_height="match_parent"
-                      android:orientation="horizontal">
+                      android:layout_height="0dp"
+                      android:orientation="horizontal"
+                      android:layout_weight="1">
+
             <Button
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="START"
                 android:id="@+id/startButton"
-                android:layout_marginBottom="51dp"
                 android:onClick="startLogging"/>
             <Button
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="End"
                 android:id="@+id/endButton"
-                android:layout_marginBottom="51dp"
                 android:onClick="stopLogging"/>
             <Button
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Save"
                 android:id="@+id/submitButton"
-                android:layout_marginBottom="51dp"
                 android:onClick="submit"/>
         </LinearLayout>
 </LinearLayout>

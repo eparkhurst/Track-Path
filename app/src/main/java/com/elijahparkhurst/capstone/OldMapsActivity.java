@@ -45,15 +45,17 @@ public class OldMapsActivity extends FragmentActivity implements OnMapReadyCallb
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+
         Intent intent = getIntent();
         locationArray = intent.getParcelableArrayListExtra("Location");
-
-        final Toolbar myToolbar = (Toolbar)findViewById(R.id.my_toolbar);
 
         final TextView noteText;
         final RelativeLayout noteArea = (RelativeLayout)findViewById(R.id.noteArea);
         noteArea.setBackgroundColor(Color.parseColor("#fff2cc"));
         noteText = (TextView)findViewById(R.id.notesTextView);
+
+
         noteText.setText(intent.getStringExtra("Note"));
         myToolbar.setTitle(intent.getStringExtra("Title"));
     }
