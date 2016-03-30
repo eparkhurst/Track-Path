@@ -1,10 +1,15 @@
 package com.elijahparkhurst.capstone;
 
+import android.Manifest;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 
@@ -32,6 +37,7 @@ public class MyIntentService extends IntentService {
     public Timer mTimer;
     private ArrayList locationArray = new ArrayList();
     public String title = "";
+    public Location l;
 
 
 
@@ -79,39 +85,33 @@ public class MyIntentService extends IntentService {
     }
 
 
-
-
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId){
+    public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "starting!!");
         startLogging();
-     return 0;
+        return 0;
     }
-
-
-
-
-
 
 
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getStringExtra("action");
-            Log.i(TAG,action);
+            Log.i(TAG, action);
             if (ACTION_FOO.equals(action)) {
-               startLogging();
+                startLogging();
             } else if (ACTION_BAZ.equals(action)) {
                 stopLogging();
             }
         }
     }
 
-    public void startLogging(){
+    public void startLogging() {
 
-        Log.i(TAG,"THIS WAS HIT IN THE BACKGROUND SERVICE");
-        mTimer = new Timer();
-        mTimer.scheduleAtFixedRate(mTask, 500, 10000);
+        Log.i(TAG, "THIS WAS HIT IN THE BACKGROUND SERVICE");
+        getLocation();
+//        mTimer = new Timer();
+//        mTimer.scheduleAtFixedRate(mTask, 500, 10000);
 
     }
 
@@ -119,14 +119,25 @@ public class MyIntentService extends IntentService {
         public void run() {
             getLocation();
             double lat = DEFAULT_LAT_LNG.latitude;
-            Log.i(TAG, "timer task latitiude is : "+String.valueOf(lat));
+            Log.i(TAG, "timer task latitiude is : " + String.valueOf(lat));
             locationArray.add(DEFAULT_LAT_LNG);
             int len = locationArray.size();
             Log.i(TAG, "before it is sent the length is :" + String.valueOf(len));
         }
     };
 
-    public void stopLogging(){
+    public void stopLogging() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        //lm.removeUpdates(locationListener);
         mTask.cancel();
        // mTimer.cancel();
         int len = locationArray.size();
@@ -139,30 +150,57 @@ public class MyIntentService extends IntentService {
         stopLogging();
     }
 
+
+    LocationListener locationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            useLocation(location);
+            // Called when a new location is found by the network location provider
+        }
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+        public void onProviderEnabled(String provider) {}
+
+        public void onProviderDisabled(String provider) {}
+    };
+
+
+
     public void getLocation(){
-        double Default_Lat = 0;
-        double Default_Lng = 0;
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         List<String> providers = lm.getProviders(true);
-        Location l;
         for (int i = 0; i < providers.size(); i++) {
             Log.i(TAG, providers.get(i));
+
             try {
-                //lm.requestLocationUpdates(providers.get(i),5000,1,this);
-
-
                 l = lm.getLastKnownLocation(providers.get(i));
-                if (l != null) {
-                    Default_Lat = l.getLatitude();
-                    Default_Lng = l.getLongitude();
-                    break;
-                }
+                lm.requestLocationUpdates(providers.get(i),5000,0,locationListener);
+
             } catch (SecurityException e) {
                 e.printStackTrace();
             }
         }
-        DEFAULT_LAT_LNG = new LatLng(Default_Lat, Default_Lng);
+
     }
+
+    int numberOfHits = 0;
+
+    public void useLocation(Location location) {
+        numberOfHits++;
+        double Default_Lat = 0;
+        double Default_Lng = 0;
+        l= location;
+        if (l != null) {
+            Default_Lat = l.getLatitude();
+            Default_Lng = l.getLongitude();
+        }
+        Log.i(TAG, String.valueOf(Default_Lat)+"  "+numberOfHits);
+        DEFAULT_LAT_LNG = new LatLng(Default_Lat, Default_Lng);
+        locationArray.add(DEFAULT_LAT_LNG);
+    }
+
+
+
 
     public static final String TRANSACTION_DONE = "done";
 
@@ -174,6 +212,7 @@ public class MyIntentService extends IntentService {
         i.putParcelableArrayListExtra("locationData", locationArray);
         MyIntentService.this.sendBroadcast(i);
     }
+
 
 
 
