@@ -39,10 +39,6 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences prefs = null;
     private int userId;
 
-//    Intent i = new Intent(this, BackgroundService.class);
-//    i.putExtra("url", getIntent().getExtras().getString("url"));
-//    startService(i);
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,22 +47,15 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
-
         prefs = getSharedPreferences("com.elijahparkhurst.capstone", MODE_PRIVATE);
-
-
-
         final ListView myList;
         myList = (ListView)findViewById(R.id.listView);
-
-
         myList.setClickable(true);
         myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String obj = mapper.get((position)).toString();
                 Log.i(TAG,"Clicked on an old map");
-
                 try {
                     JSONObject jsonObj = new JSONObject(obj);
                     Intent intent = new Intent(MainActivity.this, OldMapsActivity.class);
@@ -77,10 +66,6 @@ public class MainActivity extends AppCompatActivity {
                     JSONArray jArray = jsonArrayObj.getJSONArray("array");
                     Log.i(TAG, "Array to convert" + jArray.toString());
                     intent.putParcelableArrayListExtra("Location", convertJsonArray(jArray));
-//                    intent.putExtra("Reminder_Name", jsonObj.get("name").toString());
-//                    intent.putExtra("Reminder_Latitude", Double.parseDouble(jsonObj.get("lat").toString()));
-//                    intent.putExtra("Reminder_Longitude", Double.parseDouble(jsonObj.get("long").toString()));
-//                    intent.putExtra("Reminder_Radius", Double.parseDouble(jsonObj.get("radius").toString()));
                     startActivity(intent);
 
                 } catch (Exception e) {
@@ -88,12 +73,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, allMaps);
         adapter.clear();
         adapter.notifyDataSetChanged();
         myList.setAdapter(adapter);
-
     }
 
     @Override
@@ -120,11 +103,8 @@ public class MainActivity extends AppCompatActivity {
         return listdata;
     }
 
-
-
     private class DownloadTask extends AsyncTask<String, Void, String> {
         String verb ="";
-
         @Override
         protected String doInBackground(String... params) {
             String url = params[0].toString();
@@ -164,8 +144,6 @@ public class MainActivity extends AppCompatActivity {
 
     private String downloadContent(String myurl, String verb) throws IOException {
         InputStream is = null;
-        // Only display the first 500 characters of the retrieved
-        // web page content.
         int len = 500;
 
         try {
@@ -175,21 +153,17 @@ public class MainActivity extends AppCompatActivity {
             conn.setConnectTimeout(15000 /* milliseconds */);
             conn.setRequestMethod(verb);
             conn.setDoInput(true);
-            // Starts the query
             conn.connect();
             int response = conn.getResponseCode();
             Log.i(TAG, "The response is: " + response);
             is = conn.getInputStream();
-            // Convert the InputStream into a string
             String contentAsString = convertStreamToString(is);
             Log.i(TAG, contentAsString);
 
             try {
-                // Parse the entire JSON string
                 JSONArray maps = new JSONArray(contentAsString);
 
                 for(int i=0;i<maps.length();i++) {
-                    // parse the JSON object into fields and values
                     JSONObject jsonPost = maps.getJSONObject(i);
                     String aPost = jsonPost.getString("title");
                     allMaps.add(aPost);
@@ -201,17 +175,14 @@ public class MainActivity extends AppCompatActivity {
             } catch (Exception e) {
                 Log.d("Mapit","Exception",e);
             }
-
             return contentAsString;
-
-            // Makes sure that the InputStream is closed after the app is
-            // finished using it.
         } finally {
             if (is != null) {
                 is.close();
             }
         }
     }
+
     private String convertStreamToString(InputStream is) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
@@ -236,11 +207,9 @@ public class MainActivity extends AppCompatActivity {
     private void toggleRefresh() {
         if (progressBar.getVisibility() == View.INVISIBLE){
             progressBar.setVisibility(View.VISIBLE);
-            //mRefreshImageView.setVisibility(View.INVISIBLE);
         }
         else{
             progressBar.setVisibility(View.INVISIBLE);
-           // mRefreshImageView.setVisibility(View.VISIBLE);
         }
     }
 

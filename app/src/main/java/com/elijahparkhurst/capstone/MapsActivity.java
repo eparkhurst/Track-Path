@@ -50,7 +50,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -76,7 +75,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         registerReceiver(locationReceiver, intentFilter);
     }
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -91,13 +89,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
     }
+
     public void startLogging(View view){
         layout.setBackgroundColor(Color.parseColor("#51b46d"));
         service = new Intent(this, MyIntentService.class);
 
         startService(service);
-     //   service.putExtra("action", "start");
-
     }
 
     public void getLocation(){
@@ -125,7 +122,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void stopLogging(View view){
         layout.setBackgroundColor(Color.parseColor("#39add1"));
         submitButton.setEnabled(true);
-        //service.putExtra("action", "stop");
         stopService(service);
     }
 
@@ -157,9 +153,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         unregisterReceiver(locationReceiver);
         super.onStop();
     }
-
-
-
 
     public void submit(View view){
         Intent intent = new Intent(this, SubmitActivity.class);

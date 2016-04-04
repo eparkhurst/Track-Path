@@ -27,8 +27,6 @@ public class SubmitActivity extends AppCompatActivity {
     public EditText mTitle;
     public EditText mNote;
     public JSONArray jsonLocationArray = new JSONArray();
-
-    public LocationToSend sender = new LocationToSend();
     private ArrayList locationArray = new ArrayList();
     private int userId;
 
@@ -108,11 +106,6 @@ public class SubmitActivity extends AppCompatActivity {
             if (HTTP_Verb == "POST") {
                 HTTP_URL = "http://trackpath.herokuapp.com/newmap";
             }
-//            else if (HTTP_Verb == "PUT") {
-//                HTTP_URL = REMINDER_API_URL + User_ID + "/" + Task_ID;
-//            } else if (HTTP_Verb == "DELETE") {
-//                HTTP_URL = REMINDER_API_URL + User_ID + "/" + Task_ID;
-//            }
 
             try {
                 URL url = new URL(HTTP_URL);
@@ -144,35 +137,9 @@ public class SubmitActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void result) {
-            // TODO Auto-generated method stub
-            //Log.i(TAG,result.toString());
-            // super.onPostExecute(result);
-            // Handle/Update UI Part
         }
 
 
     }
-    public class LocationToSend{
 
-        private String lat = "123";
-        public String lng = "456";
-
-        public String getLat() {
-            return lat;
-        }
-
-        public String getLng() {
-            return lng;
-        }
-
-        public void setLat(String lat) {
-            this.lat = lat;
-        }
-
-        public void setLng(String lng) {
-            this.lng = lng;
-        }
-
-
-    }
 }

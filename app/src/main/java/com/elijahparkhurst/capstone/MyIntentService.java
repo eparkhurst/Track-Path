@@ -22,13 +22,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**
- * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
- * <p/>
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
- */
 public class MyIntentService extends IntentService {
 
 
@@ -38,11 +31,6 @@ public class MyIntentService extends IntentService {
     private ArrayList locationArray = new ArrayList();
     public String title = "";
     public Location l;
-
-
-
-    // TODO: Rename actions, choose action names that describe tasks that this
-    // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     private static final String ACTION_FOO = "start";
     private static final String ACTION_BAZ = "stop";
 
@@ -50,35 +38,15 @@ public class MyIntentService extends IntentService {
     private static final String EXTRA_PARAM1 = "com.elijahparkhurst.capstone.extra.PARAM1";
     private static final String EXTRA_PARAM2 = "com.elijahparkhurst.capstone.extra.PARAM2";
 
+
     public MyIntentService() {
         super("MyIntentService");
     }
 
-    /**
-     * Starts this service to perform action Foo with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
+
     public static void startActionFoo(Context context, String param1, String param2) {
         Intent intent = new Intent(context, MyIntentService.class);
         intent.setAction(ACTION_FOO);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
-        context.startService(intent);
-    }
-
-    /**
-     * Starts this service to perform action Baz with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
-    public static void startActionBaz(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, MyIntentService.class);
-        intent.setAction(ACTION_BAZ);
         intent.putExtra(EXTRA_PARAM1, param1);
         intent.putExtra(EXTRA_PARAM2, param2);
         context.startService(intent);
@@ -107,13 +75,10 @@ public class MyIntentService extends IntentService {
     }
 
     public void startLogging() {
-
         Log.i(TAG, "THIS WAS HIT IN THE BACKGROUND SERVICE");
         getLocation();
-//        mTimer = new Timer();
-//        mTimer.scheduleAtFixedRate(mTask, 500, 10000);
-
     }
+
 
     public TimerTask mTask = new TimerTask() {
         public void run() {
@@ -128,18 +93,9 @@ public class MyIntentService extends IntentService {
 
     public void stopLogging() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        //lm.removeUpdates(locationListener);
         mTask.cancel();
-       // mTimer.cancel();
         int len = locationArray.size();
         Log.i(TAG, "In STop Logging length is :" + String.valueOf(len));
         notifyFinished();
@@ -154,7 +110,6 @@ public class MyIntentService extends IntentService {
     LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
             useLocation(location);
-            // Called when a new location is found by the network location provider
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {}
@@ -199,11 +154,7 @@ public class MyIntentService extends IntentService {
         locationArray.add(DEFAULT_LAT_LNG);
     }
 
-
-
-
     public static final String TRANSACTION_DONE = "done";
-
 
     private void notifyFinished(){
         int len = locationArray.size();
@@ -213,26 +164,4 @@ public class MyIntentService extends IntentService {
         MyIntentService.this.sendBroadcast(i);
     }
 
-
-
-
-
-
-    /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionFoo(String param1, String param2) {
-        // TODO: Handle action Foo
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    /**
-     * Handle action Baz in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionBaz(String param1, String param2) {
-        // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
 }
